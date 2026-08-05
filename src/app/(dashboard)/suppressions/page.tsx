@@ -165,7 +165,13 @@ export default function SuppressionsPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        showNotification(`${item.whatsapp_number || item.email} re-opted into WhatsApp`);
+        const who = item.whatsapp_number || item.email;
+        showNotification(
+          data.notified
+            ? `${who} re-opted into WhatsApp — confirmation message sent`
+            : `${who} re-opted into WhatsApp, but the confirmation message couldn't be sent${data.notifyError ? ` (${data.notifyError})` : ""}`,
+          data.notified ? "success" : "error"
+        );
         setWaItems((prev) => prev.filter((i) => (i.id || i._id) !== id));
         setWaTotal((t) => Math.max(0, t - 1));
       } else {
